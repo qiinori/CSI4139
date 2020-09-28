@@ -1,14 +1,13 @@
 import javax.crypto.SecretKey;
-import javax.xml.bind.DatatypeConverter;
 
 public class Test{
 
-    public static void main(String[] args) {
-        SecretKey Symmetrickey = createAESKey();
+    public static void main(String[] args) throws Exception {
+        SecretKey Symmetrickey = SymmetricEncryption.createAESKey();
 
         System.out.println("**********************"); 
         System.out.println("Testing Symmetric key"); 
-        System.out.println("The Symmetric Key is :" + DatatypeConverter.printHexBinary(Symmetrickey.getEncoded())); 
+        System.out.println("The Symmetric Key is :" + new String(Symmetrickey.getEncoded())); 
         System.out.println("**********************"); 
     }
 
