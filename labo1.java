@@ -21,63 +21,81 @@ public class labo1 {
 
 	/**
 	 * Problems:
-	 * 1.file path not valid -- corrected plain-text.txt file name try again?
-	 * 2.line 61.62 not compatiable type -- not sure
-	 * 3.add verify signature -- added
-	 * 4.add Hash
+	 * 1.Can get random error during decryption process
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-
+		
+		//Initial values
+		String decryptedMessage = "";
+		String originalMessage = "";
+		
+		//Symmetric key used for message encryption/decryption with initialization vector
 		SecretKey Symmetrickey = SymmetricEncryption.createAESKey();
+		byte[] initial = SymmetricEncryption.createInitializationVector();
+		System.out.println("The Symmetric Key is :" + new String(Symmetrickey.getEncoded()));
+		
 		// Keypair used for Encryption and Decryption
 		KeyPair EncryptionKeys = AsymmetricEncryption.generateRSAKeyPair();
 		// Keypair used for Signing and Verifying
 		KeyPair SigningKeys = AsymmetricEncryption.generateRSAKeyPair();
-		System.out.println("The Symmetric Key is :" + new String(Symmetrickey.getEncoded()));
-		System.out.println("The Asymmetric Key is :" + new String(Symmetrickey.getEncoded()));
+		
+		//Random salt used for hashing
+		byte[] salt = Hash.generateRandomSalt();
+		
 
+<<<<<<< HEAD
 		File file = new File("plain-text.txt");
+=======
+		//Reading content of File
+		File file = new File("src/plain-text.txt");
+>>>>>>> f136f258922b301a69419d98e407a61703c0d05f
 		Scanner scanner = new Scanner(file);
 		System.out.println("Read textfile...");
 		// read line by line
 		while (scanner.hasNextLine()) {
 			// process each line
 			String testText = scanner.nextLine();
-			System.out.println(testText);
-			// String testText = "This is a test!";
-			// Sender
-			// Making the symmetric Key and encrypting the message
-			byte[] initial = SymmetricEncryption.createInitializationVector();
-			byte[] cipherText = SymmetricEncryption.performAESEncyption(testText, Symmetrickey, initial);
-
-			// Sign the message using the sender's private key
-			byte[] messageSignature = DigitalSignature.createDigitalSignature(testText.getBytes(),
-					SigningKeys.getPrivate());
-
-			// Encrypting the symmetric Key using the sender's public key
-			byte[] encryptedSymmetrickey = AsymmetricEncryption
-					.performRSAEncryption(new String(Symmetrickey.getEncoded()), EncryptionKeys.getPublic());
-
-			// Receiver
-			String decryptedSymmetrickey = AsymmetricEncryption.performRSADecryption(encryptedSymmetrickey,EncryptionKeys.getPrivate());
-			// Decrypt message
-			byte[] symKey = decryptedSymmetrickey.getBytes();
-			SecretKey originalKey = new SecretKeySpec(symKey, 0, symKey.length, "AES");
-			System.out.println("The Decrypted Symmetric Key is :" + new String(originalKey.getEncoded()));
-			String decryptedMessage = SymmetricEncryption.performAESDecryption(cipherText, originalKey, initial);
-			System.out.println(decryptedMessage);
-			
-			//Verify signature
-			boolean isVerified = DigitalSignature.verifyDigitalSignature(decryptedMessage.getBytes(), messageSignature,SigningKeys.getPublic());
-			if(isVerified == true) {
-				System.out.println("Signature has been verified and confirmed");
-			} else {
-				System.out.println("There is a mistake with the signature");
-			}
+			originalMessage = originalMessage + "\n" + testText;
+			System.out.println(testText);			
 		}
 		scanner.close();
+		
+		//Sender
+		//Encrypting the message
+		byte[] cipherText = SymmetricEncryption.performAESEncyption(originalMessage, Symmetrickey, initial);
+
+		// Sign the message using the sender's private key
+		byte[] hashedOriginalMessage = Hash.createSHA2Hash(originalMessage, salt);
+		byte[] messageSignature = DigitalSignature.createDigitalSignature(hashedOriginalMessage,
+				SigningKeys.getPrivate());
+
+		// Encrypting the symmetric Key using the sender's public key
+		byte[] encryptedSymmetrickey = AsymmetricEncryption
+				.performRSAEncryption(new String(Symmetrickey.getEncoded()), EncryptionKeys.getPublic());
+		
+		
+		// Receiver
+		//Decrypting Symmetric key using receiver's private key
+		String decryptedSymmetrickey = AsymmetricEncryption.performRSADecryption(encryptedSymmetrickey,EncryptionKeys.getPrivate());
+		
+		//Decrypting the message with the decrypted symmetric key
+		byte[] symKey = decryptedSymmetrickey.getBytes();
+		SecretKey originalKey = new SecretKeySpec(symKey, 0, symKey.length, "AES");
+		System.out.println("The Decrypted Symmetric Key is :" + new String(originalKey.getEncoded()));
+		decryptedMessage = SymmetricEncryption.performAESDecryption(cipherText, originalKey, initial);
+		System.out.println("The decrypted message is : \n" + decryptedMessage);
+		
+		
+		//Verify signature
+		byte[] tmpHash = Hash.createSHA2Hash(decryptedMessage, salt);
+		boolean isVerified = DigitalSignature.verifyDigitalSignature(tmpHash, messageSignature,SigningKeys.getPublic());
+		if(isVerified == true) {
+			System.out.println("Signature has been verified and confirmed");
+		} else {
+			System.out.println("There is a mistake with the signature");
+		}
 
 	}
 
