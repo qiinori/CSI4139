@@ -21,9 +21,9 @@ public class labo1 {
 
 	/**
 	 * Problems:
-	 * 1.file path not valid
-	 * 2.line 61.62 not compatiable type
-	 * 3.add verify signature
+	 * 1.file path not valid -- corrected plain-text.txt file name try again?
+	 * 2.line 61.62 not compatiable type -- not sure
+	 * 3.add verify signature -- added
 	 * 4.add Hash
 	 * @param args
 	 * @throws Exception
@@ -38,7 +38,7 @@ public class labo1 {
 		System.out.println("The Symmetric Key is :" + new String(Symmetrickey.getEncoded()));
 		System.out.println("The Asymmetric Key is :" + new String(Symmetrickey.getEncoded()));
 
-		File file = new File("plain-text.txt");
+		File file = new File("/plain-text.txt");
 		Scanner scanner = new Scanner(file);
 		System.out.println("Read textfile...");
 		// read line by line
@@ -68,6 +68,14 @@ public class labo1 {
 			System.out.println("The Decrypted Symmetric Key is :" + new String(originalKey.getEncoded()));
 			String decryptedMessage = SymmetricEncryption.performAESDecryption(cipherText, originalKey, initial);
 			System.out.println(decryptedMessage);
+			
+			//Verify signature
+			boolean isVerified = DigitalSignature.verifyDigitalSignature(decryptedMessage.getBytes(), messageSignature,SigningKeys.getPublic());
+			if(isVerified == true) {
+				System.out.println("Signature has been verified and confirmed");
+			} else {
+				System.out.println("There is a mistake with the signature");
+			}
 		}
 		scanner.close();
 
