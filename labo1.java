@@ -44,13 +44,10 @@ public class labo1 {
 		//Random salt used for hashing
 		byte[] salt = Hash.generateRandomSalt();
 		
-
-<<<<<<< HEAD
-		File file = new File("plain-text.txt");
-=======
 		//Reading content of File
-		File file = new File("src/plain-text.txt");
->>>>>>> f136f258922b301a69419d98e407a61703c0d05f
+		File file = new File("plain-text.txt");
+		//File file = new File("src/plain-text.txt");
+
 		Scanner scanner = new Scanner(file);
 		System.out.println("Read textfile...");
 		// read line by line
