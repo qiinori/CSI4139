@@ -89,7 +89,7 @@ public class labo1 {
 				"The Decrypted Symmetric Key is :" + Base64.getEncoder().encodeToString(originalKey.getEncoded()));
 		// Need to fix this
 		decryptedMessage = SymmetricEncryption.performAESDecryption(cipherText, originalKey, initial);
-		System.out.println("The decrypted message is : " + decryptedMessage);
+		System.out.println("The Decrypted message are : " + decryptedMessage);
 
 		// Verify Hash
 		byte[] tmpHash = Hash.createSHA2Hash(decryptedMessage, salt);
