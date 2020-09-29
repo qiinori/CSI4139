@@ -21,8 +21,8 @@ import java.io.FileNotFoundException;
 public class labo1 {
 
 	/**
-	 * Problems: 1.Can get random error during decryption process
-	 * 2.lane 87 
+	 * Problems: 1.Can get random error during decryption process 2.lane 87
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
@@ -52,6 +52,7 @@ public class labo1 {
 
 		Scanner scanner = new Scanner(file);
 		System.out.println("Read textfile...");
+		System.out.println("The messages are: ");
 		// read line by line
 		while (scanner.hasNextLine()) {
 			// process each line
@@ -74,6 +75,8 @@ public class labo1 {
 		byte[] encryptedSymmetrickey = AsymmetricEncryption.performRSAEncryption(new String(Symmetrickey.getEncoded()),
 				EncryptionKeys.getPublic());
 
+		System.out.println(
+				"The Encrypted Symmetric Key is :" + Base64.getEncoder().encodeToString(encryptedSymmetrickey));
 		// Receiver
 		// Decrypting Symmetric key using receiver's private key
 		String decryptedSymmetrickey = AsymmetricEncryption.performRSADecryption(encryptedSymmetrickey,
@@ -82,10 +85,11 @@ public class labo1 {
 		// Decrypting the message with the decrypted symmetric key
 		byte[] symKey = decryptedSymmetrickey.getBytes();
 		SecretKey originalKey = new SecretKeySpec(symKey, 0, symKey.length, "AES");
-		System.out.println("The Decrypted Symmetric Key is :" + Base64.getEncoder().encodeToString(originalKey.getEncoded()));
-		//Need to fix this 
+		System.out.println(
+				"The Decrypted Symmetric Key is :" + Base64.getEncoder().encodeToString(originalKey.getEncoded()));
+		// Need to fix this
 		decryptedMessage = SymmetricEncryption.performAESDecryption(cipherText, originalKey, initial);
-		System.out.println("The decrypted message is : \n" + decryptedMessage);
+		System.out.println("The decrypted message is : " + decryptedMessage);
 
 		// Verify Hash
 		byte[] tmpHash = Hash.createSHA2Hash(decryptedMessage, salt);
@@ -93,12 +97,10 @@ public class labo1 {
 		System.out.println(passwordHash);
 		boolean isVerifiedHash = Hash.verifyPassord(passwordHash, passwordHash);
 		/**
-		if (isVerifiedHash) {
-			System.out.println("Hash has been verified and confirmed");
-		} else {
-			System.out.println("There is a mistake with the hash");
-		}
-		*/
+		 * if (isVerifiedHash) { System.out.println("Hash has been verified and
+		 * confirmed"); } else { System.out.println("There is a mistake with the hash");
+		 * }
+		 */
 
 		// Verify signature
 		boolean isVerifiedSignature = DigitalSignature.verifyDigitalSignature(tmpHash, messageSignature,
