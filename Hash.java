@@ -2,6 +2,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
+//import org.mindrot.jbcrypt.BCrypt;
 public class Hash {
 
     private static final String SHA2_ALGORITHM = "SHA-256";
@@ -13,7 +14,7 @@ public class Hash {
         return salt;
     }
 
-    public static byte[] createSHA2Hash(String input, byte[] salt) throws Exception{
+    public static byte[] createSHA2Hash(String input, byte[] salt) throws Exception {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         byteStream.write(salt);
         byteStream.write(input.getBytes());
@@ -21,5 +22,13 @@ public class Hash {
 
         MessageDigest messageDigest = MessageDigest.getInstance(SHA2_ALGORITHM);
         return messageDigest.digest(valueToHash);
+    }
+    
+    public static String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public static boolean verifyPassord(String password, String hashedPassword) {
+        return BCrypt.checkpw(password, hashedPassword);
     }
 }

@@ -38,7 +38,7 @@ public class labo1 {
 		System.out.println("The Symmetric Key is :" + new String(Symmetrickey.getEncoded()));
 		System.out.println("The Asymmetric Key is :" + new String(Symmetrickey.getEncoded()));
 
-		File file = new File("/plain-text.txt");
+		File file = new File("plain-text.txt");
 		Scanner scanner = new Scanner(file);
 		System.out.println("Read textfile...");
 		// read line by line
