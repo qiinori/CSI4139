@@ -22,7 +22,7 @@ public class labo1 {
 
 	/**
 	 * Problems: 1.Can get random error during decryption process
-	 * 
+	 * 2.lane 87 
 	 * @param args
 	 * @throws Exception
 	 */
@@ -83,6 +83,7 @@ public class labo1 {
 		byte[] symKey = decryptedSymmetrickey.getBytes();
 		SecretKey originalKey = new SecretKeySpec(symKey, 0, symKey.length, "AES");
 		System.out.println("The Decrypted Symmetric Key is :" + Base64.getEncoder().encodeToString(originalKey.getEncoded()));
+		//Need to fix this 
 		decryptedMessage = SymmetricEncryption.performAESDecryption(cipherText, originalKey, initial);
 		System.out.println("The decrypted message is : \n" + decryptedMessage);
 
