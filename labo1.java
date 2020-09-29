@@ -14,9 +14,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class labo1 {
 
+	/**
+	 * Problems:
+	 * 1.file path not valid
+	 * 2.line 61.62 not compatiable type
+	 * 3.add verify signature
+	 * 4.add Hash
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		SecretKey Symmetrickey = SymmetricEncryption.createAESKey();
@@ -27,17 +38,15 @@ public class labo1 {
 		System.out.println("The Symmetric Key is :" + new String(Symmetrickey.getEncoded()));
 		System.out.println("The Asymmetric Key is :" + new String(Symmetrickey.getEncoded()));
 
-
-		Path path = Paths.get("plain-text.txt");
-		Scanner scanner = new Scanner(path);
+		File file = new File("plain-text.txt");
+		Scanner scanner = new Scanner(file);
 		System.out.println("Read textfile...");
 		// read line by line
 		while (scanner.hasNextLine()) {
 			// process each line
 			String testText = scanner.nextLine();
 			System.out.println(testText);
-
-			//String testText = "This is a test!";
+			// String testText = "This is a test!";
 			// Sender
 			// Making the symmetric Key and encrypting the message
 			byte[] initial = SymmetricEncryption.createInitializationVector();
@@ -48,12 +57,11 @@ public class labo1 {
 					SigningKeys.getPrivate());
 
 			// Encrypting the symmetric Key using the sender's public key
-			byte[] encryptedSymmetrickey = AsymmetricEncryption.performRSAEncryption(new String(Symmetrickey.getEncoded()),
-					EncryptionKeys.getPublic());
+			byte[] encryptedSymmetrickey = AsymmetricEncryption
+					.performRSAEncryption(new String(Symmetrickey.getEncoded()), EncryptionKeys.getPublic());
 
 			// Receiver
-			String decryptedSymmetrickey = AsymmetricEncryption.performRSADecryption(encryptedSymmetrickey,
-					EncryptionKeys.getPrivate());
+			String decryptedSymmetrickey = AsymmetricEncryption.performRSADecryption(encryptedSymmetrickey,EncryptionKeys.getPrivate());
 			// Decrypt message
 			byte[] symKey = decryptedSymmetrickey.getBytes();
 			SecretKey originalKey = new SecretKeySpec(symKey, 0, symKey.length, "AES");
