@@ -25,7 +25,7 @@
     <div class="container">
         <h1 class="text-center">Welcome</h1>
         <div id="messageBox" class="jumbotron">
-            Login Status: You are not logged in. :(
+            Login Status: You are not logged in 🙁
         </div>
         <!-- where the sign-in form will be displayed -->
         <div id="okta-login-container"></div>
@@ -64,7 +64,7 @@
                 // If we get here, the user is already signed in.
                 if (res.status === 'ACTIVE') {
                     document.getElementById("messageBox").innerHTML = "Hello, " + res.login +
-                        "! You are *still* logged in! :)";
+                        "! You are *still* logged in! 😊";
                     return;
                 }
                 oktaSignIn.renderEl({
