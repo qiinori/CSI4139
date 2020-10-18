@@ -26,6 +26,8 @@ if (isset($_POST['reg_user'])) {
 	array_push($errors, "The two passwords do not match");
   }
 
+  $epassword = rand(100000,999999);//generating varification password
+
   // first check the database to make sure 
   // a user does not already exist with the same username and/or email
   $user_check_query = "SELECT * FROM users WHERE username='$username' OR email='$email' LIMIT 1";
@@ -46,8 +48,8 @@ if (isset($_POST['reg_user'])) {
   if (count($errors) == 0) {
   	$password = md5($password_1);//encrypt the password before saving in the database
 
-  	$query = "INSERT INTO users (username, email, password) 
-  			  VALUES('$username', '$email', '$password')";
+  	$query = "INSERT INTO users (username, email, epassword, password) 
+  			  VALUES('$username', '$email', '$password', '$epassword')";
   	mysqli_query($db, $query);
   	$_SESSION['username'] = $username;
   	$_SESSION['success'] = "You are now logged in";
@@ -55,6 +57,7 @@ if (isset($_POST['reg_user'])) {
   }
 }
 // LOGIN USER
+//First password check
 if (isset($_POST['login_user'])) {
   $username = mysqli_real_escape_string($db, $_POST['username']);
   $password = mysqli_real_escape_string($db, $_POST['password']);
@@ -67,13 +70,70 @@ if (isset($_POST['login_user'])) {
   }
 
   if (count($errors) == 0) {
+
+
+
+
+
+
+
   	$password = md5($password);
   	$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-  	$results = mysqli_query($db, $query);
+    $results = mysqli_query($db, $query);
   	if (mysqli_num_rows($results) == 1) {
-  	  $_SESSION['username'] = $username;
-  	  $_SESSION['success'] = "You are now logged in";
-  	  header('location: index.php');
+
+      //second password check
+      $epassword = rand(100000,999999); // generating varification password
+      mysql_query("INSERT INTO users (epassword) VALUES( 
+        '". mysql_escape_string($epassword) ."') ") or die(mysql_error());
+      //email structure
+      $to      = $email; // Send email to our user
+      $subject = 'Verification'; // Give the email a subject 
+      $message = '
+        
+      This is your varification password
+        
+      ------------------------
+      Password: '.$epassword.'
+      ------------------------
+      
+        
+      '; // Our message above including the link
+                            
+      $headers = 'From:noreply@yourwebsite.com' . "\r\n"; // Set from headers
+      mail($to, $subject, $message, $headers); // Send our email
+      //////////////////////////////////////////////////////////////////////////////////////
+  	  if (isset($_POST['login_user'])) {
+        $username = mysqli_real_escape_string($db, $_POST['username']);
+        $password = mysqli_real_escape_string($db, $_POST['password']);
+      
+        if (empty($username)) {
+          array_push($errors, "Username is required");
+        }
+        if (empty($password)) {
+          array_push($errors, "Password is required");
+        }
+      
+        if (count($errors) == 0) {
+      
+      
+      
+      
+      
+      
+      
+          $password = md5($password);
+          $query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+          $results = mysqli_query($db, $query);
+          if (mysqli_num_rows($results) == 1) {
+            $_SESSION['username'] = $username;
+            $_SESSION['success'] = "You are now logged in";
+            header('location: index.php');
+          }else {
+            array_push($errors, "Wrong username/password combination");
+          }
+        }
+      }
   	}else {
   		array_push($errors, "Wrong username/password combination");
   	}
