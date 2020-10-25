@@ -1,0 +1,4 @@
+; Disable displaying errors to screen
+display_errors = off
+; Enable writing errors to server logs
+log_errors = on
