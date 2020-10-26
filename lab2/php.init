@@ -2,3 +2,10 @@
 display_errors = off
 ; Enable writing errors to server logs
 log_errors = on
+
+
+; Disable including remote files
+allow_url_fopen = off
+; Disable opening remote files for include(), require() and include_once() functions.
+; If above allow_url_fopen is disabled, allow_url_include is also disabled.
+allow_url_include = off

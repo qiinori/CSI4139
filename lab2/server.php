@@ -27,13 +27,16 @@ $errors = array();
 
 // connect to the database
 $db = mysqli_connect('localhost', 'root', '', 'lab2','3306');
+//password security
+$password_1 = $_POST['password_1'];
+ $hashedpassword = password.hash($password_1, PASSWORD_DEFAULT);
 
 // REGISTER USER
 if (isset($_POST['reg_user'])) {
   // receive all input values from the form
   $username = mysqli_real_escape_string($db, $_POST['username']);
   $email = mysqli_real_escape_string($db, $_POST['email']);
-  $password_1 = mysqli_real_escape_string($db, $_POST['password_1']);
+  $password_1 = mysqli_real_escape_string($db, $hashedpassword);
   $password_2 = mysqli_real_escape_string($db, $_POST['password_2']);
 
   // form validation: ensure that the form is correctly filled ...
